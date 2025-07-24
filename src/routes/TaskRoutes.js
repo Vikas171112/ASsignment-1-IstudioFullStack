@@ -5,9 +5,10 @@ import {
   getAllTaskController,
   updateTaskController,
 } from "../controllers/TaskController.js";
+import { isAuthenticated } from "../middllewares/authMiddleware.js";
 const router = express.Router();
-router.post("/createtask", createTaskController);
-router.get("/getalltask", getAllTaskController);
-router.put("/update/:id", updateTaskController);
-router.delete("/delete/:id", deleteTaskController);
+router.post("/createtask", isAuthenticated, createTaskController);
+router.get("/getalltask", isAuthenticated, getAllTaskController);
+router.put("/update/:id", isAuthenticated, updateTaskController);
+router.delete("/delete/:id", isAuthenticated, deleteTaskController);
 export default router;
