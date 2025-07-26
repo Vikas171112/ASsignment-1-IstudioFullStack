@@ -1,16 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 
 class ValidationError extends Error {
-  constructor(errorDetails, message) {
+  constructor(errorDetails = {}, message = "Validation Error") {
     super(message);
     this.name = "ValidationError";
-    let explanation = [];
-    Object.keys(errorDetails.error).forEach((key) => {
-      explanation.push(errorDetails.error[key]);
-    });
-    this.explanation = explanation;
-    this.message = message;
-    this.statusCodes = StatusCodes.BAD_REQUEST;
+
+    // Safe handling of error details
+    this.error =
+      errorDetails && typeof errorDetails === "object" ? errorDetails : {};
+
+    // explanation array jisme har error message ho
+    this.explanation = Object.keys(this.error).map((key) => this.error[key]);
+
+    // Proper statusCode (consistent naming)
+    this.statusCode = StatusCodes.BAD_REQUEST;
   }
 }
+
 export default ValidationError;

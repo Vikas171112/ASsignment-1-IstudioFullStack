@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import Task from "./Task.js";
 
 const userSchema = new Schema({
   name: {
@@ -21,6 +22,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 });
 userSchema.pre("save", function saveUser(next) {
   const user = this;

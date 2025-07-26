@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import {
+  getUserByIdService,
   signinUserService,
   signupUserService,
 } from "../services/UserService.js";
@@ -19,7 +20,6 @@ export const signupUserController = async (req, res) => {
       .status(StatusCodes.CREATED)
       .json(successResponse(response, "User Signed Up successfully"));
   } catch (error) {
-    console.log(error);
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -51,5 +51,16 @@ export const siginUserController = async (req, res) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(internalErrorResponse(error));
+  }
+};
+export const getUserByIdController = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const user = await getUserByIdService(req.params.id);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(user, "User Fetched succesfully"));
+  } catch (error) {
+    console.log(error);
   }
 };

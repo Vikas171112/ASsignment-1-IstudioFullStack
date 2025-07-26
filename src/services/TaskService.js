@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import TaskRepo from "../repositories/TaskRepo.js";
 import ClientError from "../utils/clientError.js";
+import userRepository from "../repositories/UserRepo.js";
 
 export const createTaskService = async (taskObject) => {
   try {
@@ -21,13 +22,14 @@ export const createTaskService = async (taskObject) => {
 export const getAllTaskService = async () => {
   try {
     const allTasks = await TaskRepo.getAll();
+
     return allTasks;
   } catch (error) {
     console.log("Task service Error", error);
     throw error;
   }
 };
-export const getTaskById = async (id) => {
+export const getTaskByIdService = async (id) => {
   try {
     const task = await TaskRepo.getById(id);
     return task;
@@ -41,7 +43,7 @@ export const getTaskById = async (id) => {
 };
 export const updateTaskService = async (id, taskObj) => {
   try {
-    const task = getTaskById(id);
+    const task = await getTaskById(id);
     if (!task) {
       throw new ClientError({
         explanation: "Task with given ID does not exist",
@@ -50,6 +52,7 @@ export const updateTaskService = async (id, taskObj) => {
       });
     }
     const updatedTask = await TaskRepo.update(id, taskObj);
+    return updatedTask;
   } catch (error) {
     console.log("Update Task Service error", error);
     throw error;
@@ -57,7 +60,7 @@ export const updateTaskService = async (id, taskObj) => {
 };
 export const deleteTaskService = async (id) => {
   try {
-    const task = getTaskById(id);
+    const task = await getTaskById(id);
     if (!task) {
       throw new ClientError({
         explanation: "Task with given ID does not exist",
@@ -68,7 +71,6 @@ export const deleteTaskService = async (id) => {
     const deletedTask = await TaskRepo.delete(id);
     return deletedTask;
   } catch (error) {
-    console.group("Task delete Service Error", error);
     throw error;
   }
 };

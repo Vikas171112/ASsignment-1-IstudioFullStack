@@ -3,17 +3,25 @@ import {
   createTaskService,
   deleteTaskService,
   getAllTaskService,
+  getTaskByIdService,
   updateTaskService,
 } from "../services/TaskService.js";
 import {
   customErrorResponse,
+  internalErrorResponse,
   successResponse,
 } from "../utils/responseObjects.js";
 import { response } from "express";
+import userRepository from "../repositories/UserRepo.js";
+import { getUserByIdService } from "../services/UserService.js";
 
 export const createTaskController = async (req, res) => {
   try {
-    const response = await createTaskService({ ...req.body });
+    const taskObj = { ...req.body };
+    const response = await createTaskService(taskObj);
+    const user = await getUserByIdService(req.user?.id);
+    user.tasks.push(response._id);
+    user.save();
     return res
       .status(StatusCodes.CREATED)
       .json(successResponse(response, "Task created Successfully"));
@@ -43,11 +51,33 @@ export const getAllTaskController = async (req, res) => {
       .json(internalErrorResponse(error));
   }
 };
-export const updateTaskController = async (id, taskObj) => {
+export const getTaskById = async (req, res) => {
   try {
-    const { id } = req.params();
-    const { taskObj } = req.body;
-    response = await updateTaskController(id, taskObj);
+    const { id } = req.params;
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Please Provide Valid id of Task",
+      });
+    }
+    const response = await getTaskByIdService(id);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Task is fetched "));
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
+  }
+};
+export const updateTaskController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const taskObj = req.body;
+
+    const response = await updateTaskService(id, taskObj);
     res
       .status(StatusCodes.OK)
       .json(successResponse(response, "Task updated Successfully"));
@@ -69,7 +99,6 @@ export const deleteTaskController = async (req, res) => {
       .status(StatusCodes.OK)
       .json(successResponse(response, "Task DEleted Successfully"));
   } catch (error) {
-    console.log(error);
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }

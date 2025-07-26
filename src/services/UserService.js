@@ -10,23 +10,25 @@ export const signupUserService = async (userObj) => {
     const newUser = await userRepository.create(userObj);
     return newUser;
   } catch (error) {
-    console.log("UserCreation Service Error", error);
     if (error.name === "ValidationError") {
-      throw new ValidationError(
-        {
-          error: error.errors,
-        },
-        error.message
-      );
+      throw new ValidationError(error.errors, error.message);
     }
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-      throw new ValidationError(
-        { email: "Email already exists" },
-        "Duplicate Email Error"
-      );
+
+    if (
+      (error.name === "MongoServerError" || error.name === "MongoError") &&
+      error.code === 11000
+    ) {
+      const field = error.keyValue ? Object.keys(error.keyValue)[0] : "field";
+      const message = `${
+        field.charAt(0).toUpperCase() + field.slice(1)
+      } already exists`;
+
+      // Pass a valid error object to ValidationError constructor
+      throw new ValidationError({ [field]: message }, "Duplicate Field Error");
     }
   }
 };
+
 export const signinUserService = async (userObj) => {
   console.log(userObj, "service");
   try {
@@ -56,9 +58,11 @@ export const signinUserService = async (userObj) => {
     throw error;
   }
 };
-const getUserByIdService = async (id) => {
+export const getUserByIdService = async (id) => {
   try {
+    console.log(id, "Service");
     const user = await userRepository.getById(id);
+
     return user;
   } catch (error) {
     console.log("User get Service Error", error);
