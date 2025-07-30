@@ -1,13 +1,22 @@
-import { useState } from "react";
-
-import Button from "./components/Button";
-
+import { useEffect } from "react";
+import AppRoutes from "./AppRoutes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CreateTaskModalContextProvider } from "./Contexts/CreateTaskModalProvider";
+import CreateTaskModal from "./Modals/CreateTaskModal";
+import { AuthContextProvider } from "./Contexts/AuthContext";
+const queryClient = new QueryClient();
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <Button />
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
+          {" "}
+          <CreateTaskModalContextProvider>
+            <AppRoutes />
+            <CreateTaskModal />
+          </CreateTaskModalContextProvider>
+        </AuthContextProvider>
+      </QueryClientProvider>
     </>
   );
 }

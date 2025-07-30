@@ -3,10 +3,15 @@ import { PORT } from "./src/configurations/serverConfig.js";
 import ConnectDB from "./src/configurations/databaseConfig.js";
 import TaskRoutes from "./src/routes/TaskRoutes.js";
 import UserRoutes from "./src/routes/UserRoutes.js";
+import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use("/task", TaskRoutes);
 app.use("/user", UserRoutes);
 app.get("/", (req, res) => {

@@ -22,7 +22,6 @@ export const createTaskService = async (taskObject) => {
 export const getAllTaskService = async () => {
   try {
     const allTasks = await TaskRepo.getAll();
-
     return allTasks;
   } catch (error) {
     console.log("Task service Error", error);
