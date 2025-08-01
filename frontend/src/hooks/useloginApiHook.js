@@ -23,7 +23,7 @@ export const useSigninAPihook = () => {
       }
     },
     onError: (error) => {
-      console.log("❌ Sign In Failed", error);
+      console.log(" Sign In Failed", error);
     },
   });
 

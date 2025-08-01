@@ -4,9 +4,8 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null); // Initially null
+  const [user, setUser] = useState(null);
 
-  // On mount: read from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("userToken");
     const storedUser = localStorage.getItem("user");
@@ -15,14 +14,13 @@ export const AuthContextProvider = ({ children }) => {
       setToken(storedToken);
     }
     if (storedUser) {
-      // storedUser is string — parse it!
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const login = (newToken, userObj) => {
     localStorage.setItem("userToken", newToken);
-    localStorage.setItem("user", JSON.stringify(userObj)); // ✅ CORRECT
+    localStorage.setItem("user", JSON.stringify(userObj));
     setToken(newToken);
     setUser(userObj);
   };

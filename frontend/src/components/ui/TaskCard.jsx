@@ -30,8 +30,8 @@ function TaskCard() {
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
+          <CardTitle>All Tasks</CardTitle>
+          {/* <CardDescription>Card Description</CardDescription> */}
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -40,9 +40,9 @@ function TaskCard() {
             <TaskTable tasks={data?.tasks || []} />
           )}
         </CardContent>
-        <CardFooter>
+        {/* <CardFooter>
           <p>Card Footer</p>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
     </div>
   );
