@@ -18,6 +18,7 @@ import {
 import { useAuthContext } from "@/hooks/Contexts/useAuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./button";
+import { SearchInput } from "../SearchInput";
 
 function Navbar() {
   const { setOpenCreateTaskModal } = useCreateTaskModalContext();
@@ -111,6 +112,9 @@ function Navbar() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      <div>
+        <SearchInput type="text" placeholder="Search Projects....." />
+      </div>
       <div>
         <Button>Dashboard</Button>
       </div>

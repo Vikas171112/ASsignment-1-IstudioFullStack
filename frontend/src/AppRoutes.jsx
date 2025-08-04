@@ -6,13 +6,21 @@ import SignupPageConatiner from "./pages/AuthPages/SignupPageConatiner";
 
 import HomePage from "./pages/HomePages/HomePage";
 import MainLayout from "@/Layouts/MainLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPageContainer />} />
       <Route path="/signup" element={<SignupPageConatiner />} />
-      <Route path="/home" element={<MainLayout />}>
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<HomePage />} />
       </Route>
     </Routes>

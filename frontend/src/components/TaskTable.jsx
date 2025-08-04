@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useTaskEditContext } from "@/hooks/Contexts/useTaskEditContext";
 import { useDeleteTaskHook } from "@/hooks/TaskHooks/useDeleteTaskService";
 import SortingDropDown from "./SortingDropDown";
+import { SearchInput } from "./SearchInput";
 
 export default function TaskTable({ tasks = [] }) {
   const { mutateAsync: updateStatus, isPending } = useUpdateTaskStatusHook();
@@ -18,6 +19,7 @@ export default function TaskTable({ tasks = [] }) {
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleStatusToggle = async (task) => {
     const newStatus =
@@ -47,10 +49,15 @@ export default function TaskTable({ tasks = [] }) {
     }
   };
 
-  const filteredTasks =
-    statusFilter === "all"
-      ? tasks
-      : tasks.filter((task) => task.status === statusFilter);
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus =
+      statusFilter === "all" ? true : task.status === statusFilter;
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
+
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === "newest") {
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -65,65 +72,76 @@ export default function TaskTable({ tasks = [] }) {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
-        <Button
-          variant={statusFilter === "all" ? "default" : "outline"}
-          onClick={() => setStatusFilter("all")}
-        >
-          All
-        </Button>
-        <Button
-          variant={statusFilter === "isPending" ? "default" : "outline"}
-          onClick={() => setStatusFilter("isPending")}
-        >
-          Pending
-        </Button>
-        <Button
-          variant={statusFilter === "isCompleted" ? "default" : "outline"}
-          onClick={() => setStatusFilter("isCompleted")}
-        >
-          Completed
-        </Button>
-        <Button
-          variant={statusFilter === "inProgress" ? "default" : "outline"}
-          onClick={() => setStatusFilter("inProgress")}
-        >
-          In Progress
-        </Button>
-        <SortingDropDown sortBy={sortBy} setSortBy={setSortBy} />
+    <div className="space-y-4 w-full">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 flex-wrap">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={statusFilter === "all" ? "default" : "outline"}
+            onClick={() => setStatusFilter("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant={statusFilter === "isPending" ? "default" : "outline"}
+            onClick={() => setStatusFilter("isPending")}
+          >
+            Pending
+          </Button>
+          <Button
+            variant={statusFilter === "isCompleted" ? "default" : "outline"}
+            onClick={() => setStatusFilter("isCompleted")}
+          >
+            Completed
+          </Button>
+          <Button
+            variant={statusFilter === "inProgress" ? "default" : "outline"}
+            onClick={() => setStatusFilter("inProgress")}
+          >
+            In Progress
+          </Button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+          <SortingDropDown sortBy={sortBy} setSortBy={setSortBy} />
+          <SearchInput
+            type="text"
+            placeholder="Search For Tasks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wider">
                 Title
               </th>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wider">
                 Due Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {filteredTasks.map((task, idx) => (
+            {sortedTasks.map((task, idx) => (
               <tr
                 key={task._id}
-                className={`${
-                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } hover:bg-gray-100 transition-colors`}
+                className={`hover:bg-gray-50 ${
+                  idx % 2 ? "bg-gray-50" : "bg-white"
+                }`}
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                <td className="px-4 py-4 whitespace-nowrap font-medium text-gray-800 break-words">
                   {task.title}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-4 whitespace-nowrap">
                   <Badge
                     variant="outline"
                     className="capitalize px-2 py-1 text-xs"
@@ -131,13 +149,13 @@ export default function TaskTable({ tasks = [] }) {
                     {getTaskStatus(task.status)}
                   </Badge>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-4 py-4 whitespace-nowrap text-gray-600">
                   {task.dueDate
                     ? format(new Date(task.dueDate), "dd MMM yyyy")
                     : "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
+                <td className="px-4 py-4 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={task.status === "isCompleted"}
