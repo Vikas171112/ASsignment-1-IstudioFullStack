@@ -17,6 +17,7 @@ import {
 } from "./navigation-menu";
 import { useAuthContext } from "@/hooks/Contexts/useAuthContext";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./button";
 
 function Navbar() {
   const { setOpenCreateTaskModal } = useCreateTaskModalContext();
@@ -32,7 +33,6 @@ function Navbar() {
     <div className="flex justify-between items-center bg-blue-300 h-20 px-8">
       <NavigationMenu viewport={false}>
         <NavigationMenuList>
-          {/* Tasks Menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Tasks</NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -55,7 +55,6 @@ function Navbar() {
             </NavigationMenuContent>
           </NavigationMenuItem>
 
-          {/* Projects Menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -78,7 +77,6 @@ function Navbar() {
             </NavigationMenuContent>
           </NavigationMenuItem>
 
-          {/* Profile Menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger className="flex items-center gap-2">
               <FaUserCircle className="h-6 w-6" />
@@ -114,8 +112,7 @@ function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
       <div>
-        <FaUserCircle className="h-10 w-25" />
-        <span>{user?.name}</span>
+        <Button>Dashboard</Button>
       </div>
     </div>
   );
