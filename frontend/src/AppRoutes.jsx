@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<LoginPageContainer />} />
       <Route path="/login" element={<LoginPageContainer />} />
       <Route path="/signup" element={<SignupPageConatiner />} />
       <Route
