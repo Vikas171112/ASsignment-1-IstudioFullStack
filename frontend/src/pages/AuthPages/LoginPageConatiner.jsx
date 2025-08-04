@@ -24,7 +24,7 @@ export const LoginPageContainer = () => {
 
   async function handleFormSubmission(e) {
     e.preventDefault();
-    console.log("🔥 Submitted Details:", signinDetails);
+    console.log(" Submitted Details:", signinDetails);
     try {
       await signinMutation(signinDetails);
       setSigninDetails({ email: "", password: "" });

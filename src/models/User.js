@@ -24,12 +24,18 @@ const userSchema = new Schema({
   },
   tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 });
-userSchema.pre("save", function saveUser(next) {
+userSchema.pre("save", async function (next) {
   const user = this;
-  const SALT = bcrypt.genSaltSync(9);
-  const hashedPassword = bcrypt.hashSync(user.password, SALT);
+
+  if (!user.isModified("password")) {
+    return next(); // agar password nahi badla toh dobara hash nahi karna
+  }
+
+  const SALT = await bcrypt.genSalt(9);
+  const hashedPassword = await bcrypt.hash(user.password, SALT);
   user.password = hashedPassword;
   next();
 });
+
 const User = mongoose.model("User", userSchema);
 export default User;

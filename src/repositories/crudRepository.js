@@ -1,7 +1,8 @@
 export default function crudRepository(model) {
   return {
     create: async function (data) {
-      const newDoc = await model.create(data);
+      const newDoc = new model(data); // ✅
+      await newDoc.save();
       return newDoc;
     },
     getAll: async function () {

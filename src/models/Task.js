@@ -9,6 +9,7 @@ const taskSchema = new Schema(
     },
     description: {
       type: String,
+      default: "Some Status",
     },
     status: {
       type: String, // Enum ke liye Boolean nahi

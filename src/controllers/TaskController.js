@@ -11,16 +11,16 @@ import {
   internalErrorResponse,
   successResponse,
 } from "../utils/responseObjects.js";
-import { response } from "express";
-import userRepository from "../repositories/UserRepo.js";
+
 import { getUserByIdService } from "../services/UserService.js";
+import userRepository from "../repositories/UserRepo.js";
 
 export const createTaskController = async (req, res) => {
   try {
     const taskObj = { ...req.body };
     const response = await createTaskService(taskObj);
     const user = await getUserByIdService(req.user?.id);
-    user.tasks.push(response._id);
+    user.tasks.push(response);
     user.save();
     return res
       .status(StatusCodes.CREATED)
@@ -105,5 +105,20 @@ export const deleteTaskController = async (req, res) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(internalErrorResponse(error));
+  }
+};
+export const getUserTasksController = async (req, res) => {
+  try {
+    console.log("sddas", req.user.id);
+    const user = await userRepository.getTasksByUser(req.user.id);
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Sirf tasks bhej raha hoon
+    return res.status(200).json({ tasks: user.tasks });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
   }
 };

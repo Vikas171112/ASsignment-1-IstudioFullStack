@@ -42,7 +42,7 @@ export const getTaskByIdService = async (id) => {
 };
 export const updateTaskService = async (id, taskObj) => {
   try {
-    const task = await getTaskById(id);
+    const task = await getTaskByIdService(id);
     if (!task) {
       throw new ClientError({
         explanation: "Task with given ID does not exist",
@@ -59,7 +59,7 @@ export const updateTaskService = async (id, taskObj) => {
 };
 export const deleteTaskService = async (id) => {
   try {
-    const task = await getTaskById(id);
+    const task = await getTaskByIdService(id);
     if (!task) {
       throw new ClientError({
         explanation: "Task with given ID does not exist",

@@ -7,5 +7,11 @@ const userRepository = {
     const user = await User.findOne({ email });
     return user;
   },
+  getTasksByUser: async function (id) {
+    const user = await User.findById(id).populate({
+      path: "tasks",
+    });
+    return user;
+  },
 };
 export default userRepository;
