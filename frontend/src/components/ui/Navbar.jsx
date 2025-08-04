@@ -196,7 +196,7 @@ function Navbar() {
             <SearchInput type="text" placeholder="Search Projects..." />
 
             <Button
-              className="bg-white text-blue-600 hover:bg-gray-200"
+              className="bg-white  text-blue-600 hover:bg-gray-200"
               onClick={() => {
                 navigate("/dashboard");
                 setMenuOpen(false);

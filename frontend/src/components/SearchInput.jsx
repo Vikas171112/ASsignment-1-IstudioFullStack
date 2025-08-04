@@ -15,7 +15,7 @@ export function SearchInput({
         value={value}
         onChange={onChange}
       />
-      <Button type="submit" variant="outline">
+      <Button type="submit" variant="outline" className="text-black">
         Search
       </Button>
     </div>
